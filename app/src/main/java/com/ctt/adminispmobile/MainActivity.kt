@@ -3,10 +3,8 @@ package com.ctt.adminispmobile
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.ctt.adminispmobile.ui.login.LoginScreen
 import com.ctt.adminispmobile.ui.theme.AdminISPMobileTheme
-import com.ctt.adminispmobile.viewmodel.LoginViewModel
+import com.ctt.adminispmobile.navigation.AppNavigation
 
 class MainActivity : ComponentActivity() {
 
@@ -18,11 +16,7 @@ class MainActivity : ComponentActivity() {
 
             AdminISPMobileTheme {
 
-                val loginViewModel: LoginViewModel = viewModel()
-
-                LoginScreen(
-                    viewModel = loginViewModel
-                )
+                AppNavigation()
 
             }
 

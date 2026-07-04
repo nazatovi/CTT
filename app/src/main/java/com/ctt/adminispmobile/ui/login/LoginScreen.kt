@@ -12,7 +12,8 @@ import com.ctt.adminispmobile.viewmodel.LoginViewModel
 
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel
+    viewModel: LoginViewModel,
+    onLoginSuccess: () -> Unit
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
@@ -89,11 +90,11 @@ fun LoginScreen(
 
         }
 
-        if (uiState.success) {
+        LaunchedEffect(uiState.success) {
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text("Login correcto")
+            if (uiState.success) {
+                onLoginSuccess()
+            }
 
         }
 

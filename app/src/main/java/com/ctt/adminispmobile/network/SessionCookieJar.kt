@@ -18,10 +18,7 @@ class SessionCookieJar : CookieJar {
 
     override fun loadForRequest(
         url: HttpUrl
-    ): List<Cookie> {
+    ): List<Cookie> = cookies
 
-        return cookies
-
-    }
-
+    fun getCookies(): List<Cookie> = cookies
 }

@@ -1,8 +1,10 @@
 package com.ctt.adminispmobile.network
 
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface ApiService {
@@ -18,8 +20,15 @@ interface ApiService {
         username: String,
 
         @Field("password")
-        password: String
+        password: String,
 
-    ): Response<Unit>
+        @Field("INGRESAR")
+        ingresar: String = "INGRESAR"
+
+
+    ): Response<ResponseBody>
+
+    @GET("AdminISP/initAction")
+    suspend fun initAction(): Response<ResponseBody>
 
 }

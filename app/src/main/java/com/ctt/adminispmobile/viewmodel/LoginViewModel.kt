@@ -34,7 +34,7 @@ class LoginViewModel : ViewModel() {
 
             try {
 
-                val response = repository.login(
+                val ok = repository.login(
                     empresa = _uiState.value.empresa,
                     usuario = _uiState.value.usuario,
                     password = _uiState.value.password
@@ -42,15 +42,17 @@ class LoginViewModel : ViewModel() {
 
                 _uiState.value = _uiState.value.copy(
                     loading = false,
-                    success = response.isSuccessful,
-                    error = if (response.isSuccessful) null else "Usuario o contraseña incorrectos"
+                    success = ok,
+                    error = if (ok) null else "Usuario o contraseña incorrectos"
                 )
 
             } catch (e: Exception) {
 
+                e.printStackTrace()
+
                 _uiState.value = _uiState.value.copy(
                     loading = false,
-                    error = e.message
+                    error = "${e.javaClass.name}\n${e.message}"
                 )
 
             }

@@ -5,12 +5,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.ctt.adminispmobile.ui.detail.DetailScreen
 import com.ctt.adminispmobile.ui.login.LoginScreen
 import com.ctt.adminispmobile.ui.screens.SearchScreen
+import com.ctt.adminispmobile.viewmodel.AppViewModel
 import com.ctt.adminispmobile.viewmodel.LoginViewModel
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(
+    appViewModel: AppViewModel
+) {
 
     val navController = rememberNavController()
 
@@ -36,8 +40,18 @@ fun AppNavigation() {
 
         }
 
-        composable("search") {
-            SearchScreen()
+        composable(Screen.Search.route) {
+            SearchScreen(
+                appViewModel = appViewModel,
+                onOpenDetail = {
+                    navController.navigate(Screen.Detail.route)
+                }
+            )
+        }
+        composable(Screen.Detail.route) {
+            DetailScreen(
+                appViewModel = appViewModel
+            )
         }
 
     }

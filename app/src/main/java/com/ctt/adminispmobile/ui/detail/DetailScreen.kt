@@ -15,6 +15,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ctt.adminispmobile.viewmodel.detail.DetailViewModel
 import com.ctt.adminispmobile.ui.components.InfoRow
 import com.ctt.adminispmobile.ui.components.StatusChip
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.ui.platform.LocalContext
+import com.ctt.adminispmobile.ui.components.ActionButton
+import com.ctt.adminispmobile.util.RouterUtils
+import android.util.Log
+import androidx.compose.material.icons.filled.Key
+import com.ctt.adminispmobile.util.CopyUtils
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Public
 
 @Composable
 fun DetailScreen(
@@ -23,6 +33,7 @@ fun DetailScreen(
 ) {
 
     val suscriptor = appViewModel.selectedSubscriber.collectAsState().value
+    val context = LocalContext.current
     val uiState = detailViewModel.uiState.collectAsState().value
 
     if (suscriptor == null) {
@@ -133,6 +144,103 @@ fun DetailScreen(
             }
 
         }
+        Spacer(modifier = Modifier.height(20.dp))
+
+        ActionButton(
+
+            text = "Abrir Router",
+
+            icon = Icons.Default.Language,
+
+            onClick = {
+
+                uiState.monitoring?.let { monitor ->
+
+                    Log.d("ROUTER", "IP = ${monitor.framedIpAddress}")
+
+                    RouterUtils.open(
+                        context,
+                        monitor.framedIpAddress
+                    )
+
+                }
+
+            }
+
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+
+        ActionButton(
+
+            text = "Copiar Contraseña",
+
+            icon = Icons.Default.Key,
+
+            onClick = {
+
+                CopyUtils.copy(
+
+                    context = context,
+
+                    label = "Contraseña",
+
+                    value = suscriptor.password
+
+                )
+
+            }
+
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+
+        ActionButton(
+
+            text = "Copiar Usuario",
+
+            icon = Icons.Default.Person,
+
+            onClick = {
+
+                CopyUtils.copy(
+
+                    context = context,
+
+                    label = "Usuario",
+
+                    value = suscriptor.userName
+
+                )
+
+            }
+
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+
+        ActionButton(
+
+            text = "Copiar IP",
+
+            icon = Icons.Default.Language,
+
+            onClick = {
+
+                uiState.monitoring?.let { monitor ->
+
+                    CopyUtils.copy(
+
+                        context = context,
+
+                        label = "IP",
+
+                        value = monitor.framedIpAddress
+
+                    )
+
+                }
+
+            }
+
+        )
 
     }
 

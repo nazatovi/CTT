@@ -15,6 +15,8 @@ class SearchViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(SearchUiState())
     val uiState: StateFlow<SearchUiState> = _uiState.asStateFlow()
 
+    private var lastQuery: String = ""
+
     fun setTextoBusqueda(texto: String) {
         _uiState.value = _uiState.value.copy(
             textoBusqueda = texto
@@ -22,6 +24,11 @@ class SearchViewModel : ViewModel() {
     }
 
     fun buscar() {
+
+        val query = _uiState.value.textoBusqueda
+
+        if (query == lastQuery) return
+        lastQuery = query
 
         viewModelScope.launch {
 
@@ -32,9 +39,7 @@ class SearchViewModel : ViewModel() {
 
             try {
 
-                val lista = repository.buscar(
-                    _uiState.value.textoBusqueda
-                )
+                val lista = repository.buscar(query)
 
                 _uiState.value = _uiState.value.copy(
                     resultados = lista,
@@ -49,9 +54,7 @@ class SearchViewModel : ViewModel() {
                 )
 
             }
-
         }
-
     }
 
 }

@@ -3,14 +3,17 @@ package com.ctt.adminispmobile.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.ctt.adminispmobile.viewmodel.search.SearchViewModel
 import com.ctt.adminispmobile.viewmodel.AppViewModel
+import com.ctt.adminispmobile.viewmodel.search.SearchViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
     appViewModel: AppViewModel,
@@ -20,91 +23,174 @@ fun SearchScreen(
 
     val uiState by viewModel.uiState.collectAsState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
+    Scaffold(
 
-        Text(
-            text = "Buscar Suscriptor",
-            style = MaterialTheme.typography.headlineMedium
-        )
+        topBar = {
 
-        Spacer(modifier = Modifier.height(16.dp))
+            CenterAlignedTopAppBar(
 
-        OutlinedTextField(
-            value = uiState.textoBusqueda,
-            onValueChange = viewModel::setTextoBusqueda,
-            label = { Text("Usuario") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
-        )
+                title = {
 
-        Spacer(modifier = Modifier.height(12.dp))
+                    Text("AdminISP Mobile")
 
-        Button(
-            onClick = {
-                viewModel.buscar()
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Buscar")
-        }
+                },
 
-        Spacer(modifier = Modifier.height(16.dp))
+                navigationIcon = {
 
-        if (uiState.loading) {
+                    IconButton(onClick = { }) {
 
-            CircularProgressIndicator()
+                        Text("☰")
 
-        }
+                    }
 
-        uiState.error?.let {
+                },
 
-            Text(
-                text = it,
-                color = MaterialTheme.colorScheme.error
+                actions = {
+
+                    IconButton(onClick = { }) {
+
+                        Text("⚙")
+
+                    }
+
+                }
+
             )
 
         }
 
-        LazyColumn {
 
-            items(uiState.resultados) { suscriptor ->
+    ) { padding ->
 
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 6.dp),
-                    onClick = {
+        Column(
 
-                        appViewModel.selectSubscriber(suscriptor)
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize()
+                .padding(16.dp)
 
-                        onOpenDetail()
+        ) {
+            Text(
+                text = "Bienvenido",
+                style = MaterialTheme.typography.headlineSmall
+            )
 
-                    }
-                ) {
+            Text(
+                text = "Buscar un Suscriptor",
+                style = MaterialTheme.typography.bodyMedium
+            )
 
-                    Column(
-                        modifier = Modifier.padding(16.dp)
+            Spacer(modifier = Modifier.height(20.dp))
+
+            OutlinedTextField(
+                value = uiState.textoBusqueda,
+                onValueChange = {
+                    viewModel.setTextoBusqueda(it)
+                    viewModel.buscar()
+                },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                leadingIcon = {
+                    Icon(Icons.Default.Search, contentDescription = null)
+                },
+                placeholder = {
+                    Text("Buscar usuario...")
+                }
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Button(
+
+                onClick = {
+                    viewModel.buscar()
+                },
+
+                modifier = Modifier.fillMaxWidth()
+
+            ) {
+
+                Text("Buscar")
+
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            if (uiState.loading) {
+
+                CircularProgressIndicator()
+
+            }
+
+            uiState.error?.let {
+
+                Text(
+                    text = it,
+                    color = MaterialTheme.colorScheme.error
+                )
+
+            }
+
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+
+                items(uiState.resultados) { suscriptor ->
+
+                    Card(
+
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 6.dp),
+
+                        elevation = CardDefaults.cardElevation(
+                            defaultElevation = 6.dp
+                        ),
+
+                        onClick = {
+
+                            appViewModel.selectSubscriber(suscriptor)
+
+                            onOpenDetail()
+
+                        }
+
                     ) {
 
-                        Text(
-                            text = suscriptor.userName,
-                            style = MaterialTheme.typography.titleMedium
-                        )
+                        Column(
 
-                        Text("Plan: ${suscriptor.plan}")
+                            modifier = Modifier.padding(16.dp)
 
-                        Text("Puerto: ${suscriptor.port}")
+                        ) {
 
-                        Text(
-                            if (suscriptor.suspendido)
-                                "Suspendido"
-                            else
-                                "Activo"
-                        )
+                            Text(
+                                text = suscriptor.userName,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            HorizontalDivider()
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            Text("Plan: ${suscriptor.plan}")
+
+                            Spacer(modifier = Modifier.height(4.dp))
+
+                            Text("Puerto: ${suscriptor.port}")
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            Text(
+                                text = if (suscriptor.suspendido)
+                                    "🔴 Suspendido"
+                                else
+                                    "🟢 Activo",
+                                color = if (suscriptor.suspendido)
+                                    MaterialTheme.colorScheme.error
+                                else
+                                    MaterialTheme.colorScheme.primary
+                            )
+
+                        }
 
                     }
 

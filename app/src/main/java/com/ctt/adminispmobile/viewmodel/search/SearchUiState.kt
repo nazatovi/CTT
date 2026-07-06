@@ -10,6 +10,8 @@ data class SearchUiState(
 
     val loading: Boolean = false,
 
-    val error: String? = null
+    val error: String? = null,
+
+    val buscando: Boolean = false
 
 )

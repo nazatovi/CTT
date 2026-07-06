@@ -8,8 +8,10 @@ data class Suscriptor(
 
     val plan: String,
 
+    val port: Int,
+
     val suspendido: Boolean,
 
-    val port: Int
+    var monitoring: MonitoringData? = null
 
 )

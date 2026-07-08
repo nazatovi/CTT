@@ -45,5 +45,28 @@ class DetailViewModel : ViewModel() {
         }
 
     }
+    fun reiniciarSesion() {
+
+        val monitor = _uiState.value.monitoring ?: return
+
+        viewModelScope.launch {
+
+            try {
+
+                repository.reiniciarSesion(
+                    monitor.id
+                )
+
+                cargarMonitoreo(
+                    monitor.userName
+                )
+
+            } catch (_: Exception) {
+
+            }
+
+        }
+
+    }
 
 }

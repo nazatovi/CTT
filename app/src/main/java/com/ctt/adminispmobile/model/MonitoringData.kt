@@ -32,6 +32,9 @@ data class MonitoringData(
     val lastUpdate: String,
 
     @SerializedName("link")
-    val connected: Boolean
+    val connected: Boolean,
+
+    @SerializedName("id")
+    val id: Long
 
 )

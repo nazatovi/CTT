@@ -1,30 +1,32 @@
 package com.ctt.adminispmobile.ui.detail
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Key
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.ctt.adminispmobile.viewmodel.AppViewModel
-import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.ctt.adminispmobile.viewmodel.detail.DetailViewModel
+import com.ctt.adminispmobile.ui.components.ActionButton
 import com.ctt.adminispmobile.ui.components.InfoRow
 import com.ctt.adminispmobile.ui.components.StatusChip
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Language
-import androidx.compose.ui.platform.LocalContext
-import com.ctt.adminispmobile.ui.components.ActionButton
-import com.ctt.adminispmobile.util.RouterUtils
-import android.util.Log
-import androidx.compose.material.icons.filled.Key
 import com.ctt.adminispmobile.util.CopyUtils
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Public
+import com.ctt.adminispmobile.util.FormatUtils
+import com.ctt.adminispmobile.util.RouterUtils
+import com.ctt.adminispmobile.viewmodel.AppViewModel
+import com.ctt.adminispmobile.viewmodel.detail.DetailViewModel
 
 @Composable
 fun DetailScreen(
@@ -36,17 +38,25 @@ fun DetailScreen(
     val context = LocalContext.current
     val uiState = detailViewModel.uiState.collectAsState().value
 
+    var showRestartDialog by remember {
+        mutableStateOf(false)
+    }
+
     if (suscriptor == null) {
 
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
+
             Text("No hay un suscriptor seleccionado")
+
         }
 
         return
+
     }
+
     LaunchedEffect(suscriptor.userName) {
 
         detailViewModel.cargarMonitoreo(
@@ -55,64 +65,36 @@ fun DetailScreen(
 
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
+    LazyColumn(
+
+        modifier = Modifier.fillMaxSize(),
+
+        contentPadding = PaddingValues(16.dp),
+
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+
     ) {
 
-        Text(
-            text = "Detalle del Suscriptor",
-            style = MaterialTheme.typography.headlineMedium
-        )
-        if (uiState.loading) {
+        item {
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text("Cargando datos de monitoreo...")
+            Text(
+                text = "Detalle del Suscriptor",
+                style = MaterialTheme.typography.headlineMedium
+            )
 
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        if (uiState.loading) {
 
-        Card(
-            modifier = Modifier.fillMaxWidth()
-        ) {
+            item {
 
-            Column(
-                modifier = Modifier.padding(16.dp)
-            ) {
-
-                InfoRow(
-                    titulo = "Usuario",
-                    valor = suscriptor.userName
-                )
-
-                InfoRow(
-                    titulo = "Contraseña PPPoE",
-                    valor = suscriptor.password
-                )
-
-                InfoRow(
-                    titulo = "Plan",
-                    valor = suscriptor.plan
-                )
-
-                InfoRow(
-                    titulo = "Puerto",
-                    valor = suscriptor.port.toString()
-                )
-
-                StatusChip(
-                    suspendido = suscriptor.suspendido
-                )
+                Text("Cargando datos de monitoreo...")
 
             }
 
         }
-        Spacer(modifier = Modifier.height(16.dp))
 
-        uiState.monitoring?.let { monitor ->
+        item {
 
             Card(
                 modifier = Modifier.fillMaxWidth()
@@ -122,119 +104,278 @@ fun DetailScreen(
                     modifier = Modifier.padding(16.dp)
                 ) {
 
-                    Text(
-                        "Monitoreo",
-                        style = MaterialTheme.typography.titleMedium
+                    InfoRow(
+                        titulo = "Usuario",
+                        valor = suscriptor.userName
                     )
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    InfoRow(
+                        titulo = "Contraseña PPPoE",
+                        valor = suscriptor.password
+                    )
 
-                    Text("IP: ${monitor.framedIpAddress}")
+                    InfoRow(
+                        titulo = "Plan",
+                        valor = suscriptor.plan
+                    )
 
-                    Text("Tiempo: ${monitor.acctSessionTime}")
+                    InfoRow(
+                        titulo = "Puerto",
+                        valor = suscriptor.port.toString()
+                    )
 
-                    Text("Inicio: ${monitor.acctStartTime}")
-
-                    Text("MAC: ${monitor.callingStationId}")
-
-                    Text("Última actualización: ${monitor.lastUpdate}")
+                    StatusChip(
+                        suspendido = suscriptor.suspendido
+                    )
 
                 }
 
             }
 
         }
-        Spacer(modifier = Modifier.height(20.dp))
 
-        ActionButton(
+        uiState.monitoring?.let { monitor ->
 
-            text = "Abrir Router",
+            item {
 
-            icon = Icons.Default.Language,
+                Card(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
 
-            onClick = {
+                    Column(
+                        modifier = Modifier.padding(16.dp)
+                    ) {
 
-                uiState.monitoring?.let { monitor ->
+                        Text(
+                            "Monitoreo",
+                            style = MaterialTheme.typography.titleMedium
+                        )
 
-                    Log.d("ROUTER", "IP = ${monitor.framedIpAddress}")
+                        Spacer(modifier = Modifier.height(12.dp))
 
-                    RouterUtils.open(
-                        context,
-                        monitor.framedIpAddress
-                    )
+                        Text("IP: ${monitor.framedIpAddress}")
+
+                        Text("Tiempo: ${monitor.acctSessionTime}")
+
+                        Text("Inicio: ${monitor.acctStartTime}")
+
+                        Text("MAC: ${monitor.callingStationId}")
+
+                        Text("Última actualización: ${monitor.lastUpdate}")
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        InfoRow(
+                            titulo = "Descarga",
+                            valor = FormatUtils.bytesToHuman(
+                                monitor.acctOutputOctets
+                            )
+                        )
+
+                        InfoRow(
+                            titulo = "Subida",
+                            valor = FormatUtils.bytesToHuman(
+                                monitor.acctInputOctets
+                            )
+                        )
+
+                    }
 
                 }
 
             }
 
-        )
-        Spacer(modifier = Modifier.height(12.dp))
+        }
 
-        ActionButton(
+        item {
 
-            text = "Copiar Contraseña",
+            ActionButton(
 
-            icon = Icons.Default.Key,
+                text = "Abrir Router",
 
-            onClick = {
+                icon = Icons.Default.Language,
 
-                CopyUtils.copy(
+                onClick = {
 
-                    context = context,
+                    uiState.monitoring?.let { monitor ->
 
-                    label = "Contraseña",
+                        Log.d(
+                            "ROUTER",
+                            "IP = ${monitor.framedIpAddress}"
+                        )
 
-                    value = suscriptor.password
+                        RouterUtils.open(
+                            context,
+                            monitor.framedIpAddress
+                        )
 
-                )
+                    }
 
-            }
+                }
 
-        )
-        Spacer(modifier = Modifier.height(12.dp))
+            )
 
-        ActionButton(
+        }
 
-            text = "Copiar Usuario",
+        item {
 
-            icon = Icons.Default.Person,
+            ActionButton(
 
-            onClick = {
+                text = "Copiar Contraseña",
 
-                CopyUtils.copy(
+                icon = Icons.Default.Key,
 
-                    context = context,
-
-                    label = "Usuario",
-
-                    value = suscriptor.userName
-
-                )
-
-            }
-
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-
-        ActionButton(
-
-            text = "Copiar IP",
-
-            icon = Icons.Default.Language,
-
-            onClick = {
-
-                uiState.monitoring?.let { monitor ->
+                onClick = {
 
                     CopyUtils.copy(
 
                         context = context,
 
-                        label = "IP",
+                        label = "Contraseña",
 
-                        value = monitor.framedIpAddress
+                        value = suscriptor.password
 
                     )
+
+                }
+
+            )
+
+        }
+
+        item {
+
+            ActionButton(
+
+                text = "Copiar Usuario",
+
+                icon = Icons.Default.Person,
+
+                onClick = {
+
+                    CopyUtils.copy(
+
+                        context = context,
+
+                        label = "Usuario",
+
+                        value = suscriptor.userName
+
+                    )
+
+                }
+
+            )
+
+        }
+
+        item {
+
+            ActionButton(
+
+                text = "Copiar IP",
+
+                icon = Icons.Default.Language,
+
+                onClick = {
+
+                    uiState.monitoring?.let { monitor ->
+
+                        CopyUtils.copy(
+
+                            context = context,
+
+                            label = "IP",
+
+                            value = monitor.framedIpAddress
+
+                        )
+
+                    }
+
+                }
+
+            )
+
+        }
+
+        item {
+
+            ActionButton(
+
+                text = "Reiniciar Sesión",
+
+                icon = Icons.Default.Refresh,
+
+                onClick = {
+
+                    showRestartDialog = true
+
+                }
+
+            )
+
+        }
+
+    }
+
+    if (showRestartDialog) {
+
+        AlertDialog(
+
+            onDismissRequest = {
+
+                showRestartDialog = false
+
+            },
+
+            title = {
+
+                Text("Reiniciar sesión")
+
+            },
+
+            text = {
+
+                Text(
+                    "¿Desea reiniciar la sesión PPPoE del usuario ${suscriptor.userName}?"
+                )
+
+            },
+
+            confirmButton = {
+
+                TextButton(
+
+                    onClick = {
+
+                        showRestartDialog = false
+
+                        detailViewModel.reiniciarSesion()
+
+                    }
+
+                ) {
+
+                    Text("Reiniciar")
+
+                }
+
+            },
+
+            dismissButton = {
+
+                TextButton(
+
+                    onClick = {
+
+                        showRestartDialog = false
+
+                    }
+
+                ) {
+
+                    Text("Cancelar")
 
                 }
 

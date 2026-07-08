@@ -25,4 +25,15 @@ class MonitoringRepository {
 
     }
 
+    suspend fun reiniciarSesion(
+        id: Long
+    ): Boolean {
+
+        val response = RetrofitClient.api.reiniciarSesion(id)
+
+        return response.isSuccessful &&
+                response.body() == true
+
+    }
+
 }

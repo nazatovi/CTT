@@ -8,6 +8,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import com.ctt.adminispmobile.model.SuscriptoresResponse
 import com.ctt.adminispmobile.model.MonitoringResponse
+import retrofit2.http.Query
 
 
 interface ApiService {
@@ -83,6 +84,17 @@ interface ApiService {
         plan: String = ""
 
     ): Response<SuscriptoresResponse>
+
+    @GET("AdminISP/reiniciarSessionAction")
+    suspend fun reiniciarSesion(
+
+        @Query("id")
+        id: Long,
+
+        @Query("_")
+        timestamp: Long = System.currentTimeMillis()
+
+    ): Response<Boolean>
 
 
 }

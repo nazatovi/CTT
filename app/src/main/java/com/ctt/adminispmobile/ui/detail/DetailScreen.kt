@@ -27,7 +27,9 @@ import com.ctt.adminispmobile.util.FormatUtils
 import com.ctt.adminispmobile.util.RouterUtils
 import com.ctt.adminispmobile.viewmodel.AppViewModel
 import com.ctt.adminispmobile.viewmodel.detail.DetailViewModel
-
+import com.ctt.adminispmobile.ui.components.AdminCard
+import com.ctt.adminispmobile.ui.components.ScreenHeader
+import com.ctt.adminispmobile.ui.components.QuickActionsCard
 @Composable
 fun DetailScreen(
     appViewModel: AppViewModel,
@@ -77,9 +79,12 @@ fun DetailScreen(
 
         item {
 
-            Text(
-                text = "Detalle del Suscriptor",
-                style = MaterialTheme.typography.headlineMedium
+            ScreenHeader(
+
+                titulo = suscriptor.userName,
+
+                subtitulo = "Detalle del Suscriptor"
+
             )
 
         }
@@ -96,39 +101,33 @@ fun DetailScreen(
 
         item {
 
-            Card(
-                modifier = Modifier.fillMaxWidth()
-            ) {
+            AdminCard {
 
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
+                InfoRow(
+                    titulo = "Usuario",
+                    valor = suscriptor.userName
+                )
 
-                    InfoRow(
-                        titulo = "Usuario",
-                        valor = suscriptor.userName
-                    )
+                InfoRow(
+                    titulo = "Contraseña PPPoE",
+                    valor = suscriptor.password
+                )
 
-                    InfoRow(
-                        titulo = "Contraseña PPPoE",
-                        valor = suscriptor.password
-                    )
+                InfoRow(
+                    titulo = "Plan",
+                    valor = suscriptor.plan
+                )
 
-                    InfoRow(
-                        titulo = "Plan",
-                        valor = suscriptor.plan
-                    )
+                InfoRow(
+                    titulo = "Puerto",
+                    valor = suscriptor.port.toString()
+                )
 
-                    InfoRow(
-                        titulo = "Puerto",
-                        valor = suscriptor.port.toString()
-                    )
+                Spacer(modifier = Modifier.height(12.dp))
 
-                    StatusChip(
-                        suspendido = suscriptor.suspendido
-                    )
-
-                }
+                StatusChip(
+                    suspendido = suscriptor.suspendido
+                )
 
             }
 
@@ -189,125 +188,56 @@ fun DetailScreen(
 
         item {
 
-            ActionButton(
+            QuickActionsCard(
 
-                text = "Abrir Router",
+                onOpenRouter = {
 
-                icon = Icons.Default.Language,
-
-                onClick = {
-
-                    uiState.monitoring?.let { monitor ->
-
-                        Log.d(
-                            "ROUTER",
-                            "IP = ${monitor.framedIpAddress}"
-                        )
+                    uiState.monitoring?.let {
 
                         RouterUtils.open(
                             context,
-                            monitor.framedIpAddress
+                            it.framedIpAddress
                         )
 
                     }
 
-                }
+                },
 
-            )
-
-        }
-
-        item {
-
-            ActionButton(
-
-                text = "Copiar Contraseña",
-
-                icon = Icons.Default.Key,
-
-                onClick = {
+                onCopyUser = {
 
                     CopyUtils.copy(
-
-                        context = context,
-
-                        label = "Contraseña",
-
-                        value = suscriptor.password
-
+                        context,
+                        "Usuario",
+                        suscriptor.userName
                     )
 
-                }
+                },
 
-            )
-
-        }
-
-        item {
-
-            ActionButton(
-
-                text = "Copiar Usuario",
-
-                icon = Icons.Default.Person,
-
-                onClick = {
+                onCopyPassword = {
 
                     CopyUtils.copy(
-
-                        context = context,
-
-                        label = "Usuario",
-
-                        value = suscriptor.userName
-
+                        context,
+                        "Contraseña",
+                        suscriptor.password
                     )
 
-                }
+                },
 
-            )
+                onCopyIp = {
 
-        }
-
-        item {
-
-            ActionButton(
-
-                text = "Copiar IP",
-
-                icon = Icons.Default.Language,
-
-                onClick = {
-
-                    uiState.monitoring?.let { monitor ->
+                    uiState.monitoring?.let {
 
                         CopyUtils.copy(
-
-                            context = context,
-
-                            label = "IP",
-
-                            value = monitor.framedIpAddress
-
+                            context,
+                            "IP",
+                            it.framedIpAddress
                         )
 
                     }
 
-                }
+                },
 
-            )
-
-        }
-
-        item {
-
-            ActionButton(
-
-                text = "Reiniciar Sesión",
-
-                icon = Icons.Default.Refresh,
-
-                onClick = {
+                onRestart = {
 
                     showRestartDialog = true
 

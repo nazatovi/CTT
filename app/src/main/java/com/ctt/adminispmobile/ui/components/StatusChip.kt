@@ -12,36 +12,38 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun StatusChip(
+
     suspendido: Boolean
+
 ) {
 
-    val fondo = if (suspendido)
+    val color = if (suspendido)
         Color(0xFFD32F2F)
     else
         Color(0xFF2E7D32)
 
     val texto = if (suspendido)
-        "Suspendido"
+        "🔴 SUSPENDIDO"
     else
-        "Activo"
+        "🟢 EN LÍNEA"
 
     Text(
 
         text = texto,
 
-        color = Color.White,
-
-        style = MaterialTheme.typography.labelLarge,
-
         modifier = Modifier
             .background(
-                color = fondo,
-                shape = RoundedCornerShape(50)
+                color.copy(alpha = 0.15f),
+                RoundedCornerShape(50)
             )
             .padding(
-                horizontal = 14.dp,
-                vertical = 6.dp
-            )
+                horizontal = 16.dp,
+                vertical = 8.dp
+            ),
+
+        color = color,
+
+        style = MaterialTheme.typography.labelLarge
 
     )
 

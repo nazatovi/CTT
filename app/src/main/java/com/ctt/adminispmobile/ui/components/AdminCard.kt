@@ -1,7 +1,7 @@
 package com.ctt.adminispmobile.ui.components
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
@@ -16,9 +16,7 @@ fun AdminCard(
 
     modifier: Modifier = Modifier,
 
-    contentPadding: PaddingValues = PaddingValues(18.dp),
-
-    content: @Composable () -> Unit
+    content: @Composable ColumnScope.() -> Unit
 
 ) {
 
@@ -29,22 +27,18 @@ fun AdminCard(
         shape = MaterialTheme.shapes.large,
 
         colors = CardDefaults.cardColors(
-
             containerColor = MaterialTheme.colorScheme.surface
-
         ),
 
         elevation = CardDefaults.cardElevation(
-
             defaultElevation = 8.dp
-
         )
 
     ) {
 
         Column(
 
-            modifier = Modifier.padding(contentPadding)
+            modifier = Modifier.padding(16.dp)
 
         ) {
 

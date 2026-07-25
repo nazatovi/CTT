@@ -30,6 +30,11 @@ import com.ctt.adminispmobile.viewmodel.detail.DetailViewModel
 import com.ctt.adminispmobile.ui.components.AdminCard
 import com.ctt.adminispmobile.ui.components.ScreenHeader
 import com.ctt.adminispmobile.ui.components.QuickActionsCard
+import com.ctt.adminispmobile.ui.components.MonitoringCard
+import com.ctt.adminispmobile.ui.components.SubscriberCard
+import com.ctt.adminispmobile.ui.components.SubscriberHeader
+import com.ctt.adminispmobile.ui.components.LoadingCard
+
 @Composable
 fun DetailScreen(
     appViewModel: AppViewModel,
@@ -79,11 +84,15 @@ fun DetailScreen(
 
         item {
 
-            ScreenHeader(
+            SubscriberHeader(
 
-                titulo = suscriptor.userName,
+                usuario = suscriptor.userName,
 
-                subtitulo = "Detalle del Suscriptor"
+                plan = suscriptor.plan,
+
+                ip = uiState.monitoring?.framedIpAddress,
+
+                suspendido = suscriptor.suspendido
 
             )
 
@@ -93,7 +102,9 @@ fun DetailScreen(
 
             item {
 
-                Text("Cargando datos de monitoreo...")
+                LoadingCard(
+                    text = "Consultando monitoreo..."
+                )
 
             }
 
@@ -101,35 +112,11 @@ fun DetailScreen(
 
         item {
 
-            AdminCard {
+            SubscriberCard(
 
-                InfoRow(
-                    titulo = "Usuario",
-                    valor = suscriptor.userName
-                )
+                suscriptor = suscriptor
 
-                InfoRow(
-                    titulo = "Contraseña PPPoE",
-                    valor = suscriptor.password
-                )
-
-                InfoRow(
-                    titulo = "Plan",
-                    valor = suscriptor.plan
-                )
-
-                InfoRow(
-                    titulo = "Puerto",
-                    valor = suscriptor.port.toString()
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                StatusChip(
-                    suspendido = suscriptor.suspendido
-                )
-
-            }
+            )
 
         }
 
@@ -137,50 +124,9 @@ fun DetailScreen(
 
             item {
 
-                Card(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-
-                    Column(
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-
-                        Text(
-                            "Monitoreo",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        Text("IP: ${monitor.framedIpAddress}")
-
-                        Text("Tiempo: ${monitor.acctSessionTime}")
-
-                        Text("Inicio: ${monitor.acctStartTime}")
-
-                        Text("MAC: ${monitor.callingStationId}")
-
-                        Text("Última actualización: ${monitor.lastUpdate}")
-
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        InfoRow(
-                            titulo = "Descarga",
-                            valor = FormatUtils.bytesToHuman(
-                                monitor.acctOutputOctets
-                            )
-                        )
-
-                        InfoRow(
-                            titulo = "Subida",
-                            valor = FormatUtils.bytesToHuman(
-                                monitor.acctInputOctets
-                            )
-                        )
-
-                    }
-
-                }
+                MonitoringCard(
+                    monitoring = monitor
+                )
 
             }
 

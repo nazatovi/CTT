@@ -10,6 +10,8 @@ import com.ctt.adminispmobile.ui.login.LoginScreen
 import com.ctt.adminispmobile.ui.screens.SearchScreen
 import com.ctt.adminispmobile.viewmodel.AppViewModel
 import com.ctt.adminispmobile.viewmodel.LoginViewModel
+import com.ctt.adminispmobile.ui.screens.InfrastructureScreen
+import com.ctt.adminispmobile.ui.detail.EquipmentDetailScreen
 
 @Composable
 fun AppNavigation(
@@ -45,6 +47,11 @@ fun AppNavigation(
                 appViewModel = appViewModel,
                 onOpenDetail = {
                     navController.navigate(Screen.Detail.route)
+                },
+                onOpenInfrastructure = {
+
+                    navController.navigate(Screen.Infrastructure.route)
+
                 }
             )
         }
@@ -52,6 +59,32 @@ fun AppNavigation(
             DetailScreen(
                 appViewModel = appViewModel
             )
+        }
+
+        composable(Screen.Infrastructure.route) {
+
+            InfrastructureScreen(
+
+                onSearchClick = {
+
+                    navController.navigate(Screen.Search.route) {
+                        launchSingleTop = true
+                    }
+
+                }
+
+            )
+
+        }
+
+        composable(Screen.EquipmentDetail.route) {
+
+            EquipmentDetailScreen(
+
+                appViewModel = appViewModel
+
+            )
+
         }
 
     }

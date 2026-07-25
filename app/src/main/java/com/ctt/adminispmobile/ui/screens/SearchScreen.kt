@@ -12,53 +12,39 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ctt.adminispmobile.viewmodel.AppViewModel
 import com.ctt.adminispmobile.viewmodel.search.SearchViewModel
+import com.ctt.adminispmobile.ui.components.SearchResultCard
+import com.ctt.adminispmobile.ui.components.LogoAdminISP
+import com.ctt.adminispmobile.ui.components.MainScaffold
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
+
     appViewModel: AppViewModel,
+
     onOpenDetail: () -> Unit,
+
+    onOpenInfrastructure: () -> Unit,
+
     viewModel: SearchViewModel = viewModel()
+
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
 
-    Scaffold(
+    MainScaffold(
 
-        topBar = {
+        title = "Buscar Suscriptores",
 
-            CenterAlignedTopAppBar(
+        onSearchClick = {
+            // Ya estamos en esta pantalla
+        },
 
-                title = {
+        onInfrastructureClick = {
 
-                    Text("AdminISP Mobile")
-
-                },
-
-                navigationIcon = {
-
-                    IconButton(onClick = { }) {
-
-                        Text("☰")
-
-                    }
-
-                },
-
-                actions = {
-
-                    IconButton(onClick = { }) {
-
-                        Text("⚙")
-
-                    }
-
-                }
-
-            )
+            onOpenInfrastructure()
 
         }
-
 
     ) { padding ->
 
@@ -70,6 +56,11 @@ fun SearchScreen(
                 .padding(16.dp)
 
         ) {
+            LogoAdminISP(
+                modifier = Modifier.size(72.dp)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "Bienvenido",
                 style = MaterialTheme.typography.headlineSmall
@@ -83,38 +74,45 @@ fun SearchScreen(
             Spacer(modifier = Modifier.height(20.dp))
 
             OutlinedTextField(
+
                 value = uiState.textoBusqueda,
+
                 onValueChange = {
+
                     viewModel.setTextoBusqueda(it)
                     viewModel.buscar()
+
                 },
+
                 modifier = Modifier.fillMaxWidth(),
+
                 singleLine = true,
+
                 leadingIcon = {
-                    Icon(Icons.Default.Search, contentDescription = null)
+
+                    Icon(
+                        Icons.Default.Search,
+                        contentDescription = null
+                    )
+
                 },
+
+                label = {
+
+                    Text("Buscar suscriptor")
+
+                },
+
                 placeholder = {
-                    Text("Buscar usuario...")
+
+                    Text("Usuario, nombre o DNI")
+
                 }
+
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            Button(
-
-                onClick = {
-                    viewModel.buscar()
-                },
-
-                modifier = Modifier.fillMaxWidth()
-
-            ) {
-
-                Text("Buscar")
-
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             if (uiState.loading) {
 
@@ -131,21 +129,49 @@ fun SearchScreen(
 
             }
 
+            if (
+                !uiState.loading &&
+                uiState.resultados.isEmpty() &&
+                uiState.textoBusqueda.isNotBlank()
+            ) {
+
+                Text(
+
+                    text = "No se encontraron resultados.",
+
+                    style = MaterialTheme.typography.bodyMedium,
+
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+
+                )
+
+            }
+
+            if (uiState.resultados.isNotEmpty()) {
+
+                Text(
+
+                    text = "${uiState.resultados.size} resultado(s)",
+
+                    style = MaterialTheme.typography.labelMedium,
+
+                    color = MaterialTheme.colorScheme.primary
+
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+            }
+
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
 
                 items(uiState.resultados) { suscriptor ->
 
-                    Card(
+                    SearchResultCard(
 
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 6.dp),
-
-                        elevation = CardDefaults.cardElevation(
-                            defaultElevation = 6.dp
-                        ),
+                        suscriptor = suscriptor,
 
                         onClick = {
 
@@ -155,42 +181,7 @@ fun SearchScreen(
 
                         }
 
-                    ) {
-
-                        Column(
-
-                            modifier = Modifier.padding(16.dp)
-
-                        ) {
-
-                            Text(
-                                text = suscriptor.userName,
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                            HorizontalDivider()
-
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            Text("Plan: ${suscriptor.plan}")
-
-                            Spacer(modifier = Modifier.height(4.dp))
-
-                            Text("Puerto: ${suscriptor.port}")
-
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            Text(
-                                text = if (suscriptor.suspendido)
-                                    "🔴 Suspendido"
-                                else
-                                    "🟢 Activo",
-                                color = if (suscriptor.suspendido)
-                                    MaterialTheme.colorScheme.error
-                                else
-                                    MaterialTheme.colorScheme.primary
-                            )
-
-                        }
+                    )
 
                     }
 
@@ -202,4 +193,3 @@ fun SearchScreen(
 
     }
 
-}

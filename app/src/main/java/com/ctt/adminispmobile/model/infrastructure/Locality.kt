@@ -4,6 +4,8 @@ data class Locality(
 
     val name: String,
 
-    val equipments: List<Equipment>
+    val equipments: List<Equipment>,
+
+    val health: LocalityHealth = LocalityHealth.UNKNOWN
 
 )

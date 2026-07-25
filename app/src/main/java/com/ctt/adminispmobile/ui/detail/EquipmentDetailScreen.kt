@@ -9,6 +9,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ctt.adminispmobile.viewmodel.AppViewModel
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import com.ctt.adminispmobile.ui.components.EquipmentHeader
+import com.ctt.adminispmobile.ui.components.AdminCard
+import com.ctt.adminispmobile.ui.components.InfoRow
+import androidx.compose.ui.platform.LocalContext
+import com.ctt.adminispmobile.ui.components.EquipmentActionsCard
+import com.ctt.adminispmobile.util.BrowserUtils
+import com.ctt.adminispmobile.util.CopyUtils
+import com.ctt.adminispmobile.ui.components.EquipmentInfoCard
 
 @Composable
 fun EquipmentDetailScreen(
@@ -19,6 +29,8 @@ fun EquipmentDetailScreen(
 
     val equipment =
         appViewModel.selectedEquipment.collectAsState().value
+
+    val context = LocalContext.current
 
     if (equipment == null) {
 
@@ -35,48 +47,74 @@ fun EquipmentDetailScreen(
 
     }
 
-    Column(
-
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
 
-        Text(
+        item {
 
-            text = equipment.name,
+            EquipmentHeader(
 
-            style = MaterialTheme.typography.headlineMedium
+                title = equipment.name,
 
-        )
+                subtitle = equipment.vendor.name +
 
-        Text("IP: ${equipment.ip}")
+                        (equipment.model?.let { " • $it" } ?: ""),
 
-        Text("Puerto: ${equipment.port}")
+                status = equipment.status.name
 
-        Text("Fabricante: ${equipment.vendor}")
-
-        equipment.model?.let {
-
-            Text("Modelo: $it")
+            )
 
         }
 
-        equipment.frequency?.let {
+        item {
 
-            Text("Frecuencia: ${it} MHz")
+            EquipmentActionsCard(
+
+                onOpen = {
+
+                    BrowserUtils.openEquipment(
+
+                        context = context,
+
+                        ip = equipment.ip,
+
+                        port = equipment.port
+
+                    )
+
+                },
+
+                onCopyIp = {
+
+                    CopyUtils.copy(
+
+                        context,
+
+                        "IP",
+
+                        equipment.ip
+
+                    )
+
+                }
+
+            )
 
         }
 
-        equipment.routerPort?.let {
+        item {
 
-            Text("Puerto Router: $it")
+            EquipmentInfoCard(
+
+                equipment = equipment
+
+            )
 
         }
 
+        }
     }
 
-}

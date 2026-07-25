@@ -4,6 +4,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.net.InetSocketAddress
 import java.net.Socket
+import com.ctt.adminispmobile.model.infrastructure.EquipmentStatus
 
 object NetworkChecker {
 
@@ -31,26 +32,26 @@ object NetworkChecker {
             }
 
             val elapsed =
-                System.currentTimeMillis() - start
+                (System.currentTimeMillis() - start).toInt()
 
-            val state = when {
+            val status = when {
 
                 elapsed < 20 ->
-                    NetworkState.ONLINE
+                    EquipmentStatus.ONLINE
 
                 elapsed < 80 ->
-                    NetworkState.SLOW
+                    EquipmentStatus.SLOW
 
                 else ->
-                    NetworkState.SLOW
+                    EquipmentStatus.SLOW
 
             }
 
             NetworkStatus(
 
-                state = state,
+                status = status,
 
-                responseTime = elapsed,
+                latency = elapsed,
 
                 message = "OK"
 
@@ -60,7 +61,7 @@ object NetworkChecker {
 
             NetworkStatus(
 
-                state = NetworkState.OFFLINE,
+                status = EquipmentStatus.OFFLINE,
 
                 message = e.localizedMessage ?: "Sin respuesta"
 
@@ -69,5 +70,4 @@ object NetworkChecker {
         }
 
     }
-
 }

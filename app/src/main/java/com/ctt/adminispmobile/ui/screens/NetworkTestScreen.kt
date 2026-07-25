@@ -6,9 +6,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.ctt.adminispmobile.model.infrastructure.EquipmentStatus
 import com.ctt.adminispmobile.ui.components.NetworkStatusChip
 import com.ctt.adminispmobile.util.network.NetworkChecker
-import com.ctt.adminispmobile.util.network.NetworkState
 import com.ctt.adminispmobile.util.network.NetworkStatus
 import kotlinx.coroutines.launch
 
@@ -18,7 +18,7 @@ fun NetworkTestScreen() {
     var status by remember {
 
         mutableStateOf(
-            NetworkStatus(NetworkState.UNKNOWN)
+            NetworkStatus(EquipmentStatus.UNKNOWN)
         )
 
     }

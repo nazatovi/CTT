@@ -15,7 +15,9 @@ import com.ctt.adminispmobile.repository.infrastructure.InfrastructureRepository
 import com.ctt.adminispmobile.ui.components.LocalityCard
 import com.ctt.adminispmobile.ui.components.MainScaffold
 import com.ctt.adminispmobile.viewmodel.AppViewModel
-
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.ctt.adminispmobile.viewmodel.infrastructure.InfrastructureViewModel
+import androidx.compose.runtime.collectAsState
 @Composable
 fun InfrastructureScreen(
 
@@ -26,6 +28,11 @@ fun InfrastructureScreen(
     onOpenEquipmentDetail: () -> Unit
 
 ) {
+
+    val infrastructureViewModel: InfrastructureViewModel = viewModel()
+
+    val localities =
+        infrastructureViewModel.localities.collectAsState().value
 
     MainScaffold(
 
@@ -70,7 +77,7 @@ fun InfrastructureScreen(
 
             ) {
 
-                items(InfrastructureRepository.localities) { locality ->
+                items(localities) { locality ->
 
                     LocalityCard(
 

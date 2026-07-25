@@ -1,10 +1,12 @@
 package com.ctt.adminispmobile.util.network
 
+import com.ctt.adminispmobile.model.infrastructure.EquipmentStatus
+
 data class NetworkStatus(
 
-    val state: NetworkState,
+    val status: EquipmentStatus,
 
-    val responseTime: Long? = null,
+    val latency: Int? = null,
 
     val message: String = ""
 

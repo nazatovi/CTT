@@ -18,13 +18,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ctt.adminispmobile.model.infrastructure.Locality
 import com.ctt.adminispmobile.util.network.NetworkChecker
-import com.ctt.adminispmobile.util.network.NetworkState
 import com.ctt.adminispmobile.util.network.NetworkStatus
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import com.ctt.adminispmobile.model.infrastructure.EquipmentType
 import com.ctt.adminispmobile.model.infrastructure.Equipment
+import androidx.compose.ui.platform.LocalContext
+import com.ctt.adminispmobile.util.BrowserUtils
+import com.ctt.adminispmobile.util.CopyUtils
 
 @Composable
 fun LocalityCard(
@@ -40,6 +42,8 @@ fun LocalityCard(
         mutableStateOf(false)
 
     }
+
+    val context = LocalContext.current
 
     var statuses by remember {
 
@@ -145,100 +149,51 @@ fun LocalityCard(
 
             Column {
 
-                if (routers.isNotEmpty()) {
+                AnimatedVisibility(expanded) {
 
-                    EquipmentSection("🖥 ROUTERS") {
+                    Column {
 
-                        routers.forEach { equipment ->
+                        EquipmentGroup(
 
-                            EquipmentCard(
+                            title = "🖥 ROUTERS",
 
-                                equipment = equipment,
+                            equipments = routers,
 
-                                status = statuses[equipment.ip]
-                                    ?: NetworkStatus(NetworkState.UNKNOWN),
+                            statuses = statuses,
 
-                                onOpen = { },
+                            context = context,
 
-                                onCopy = { },
+                            onEquipmentClick = onEquipmentClick
 
-                                onClick = {
+                        )
 
-                                    onEquipmentClick(equipment)
+                        EquipmentGroup(
 
-                                }
+                            title = "📡 PANELES",
 
-                            )
+                            equipments = panels,
 
-                            Spacer(modifier = Modifier.height(12.dp))
+                            statuses = statuses,
 
-                        }
+                            context = context,
 
-                    }
+                            onEquipmentClick = onEquipmentClick
 
-                }
+                        )
 
-                if (panels.isNotEmpty()) {
+                        EquipmentGroup(
 
-                    EquipmentSection("📡 PANELES") {
+                            title = "📶 ENLACES",
 
-                        panels.forEach { equipment ->
+                            equipments = links,
 
-                            EquipmentCard(
+                            statuses = statuses,
 
-                                equipment = equipment,
+                            context = context,
 
-                                status = statuses[equipment.ip]
-                                    ?: NetworkStatus(NetworkState.UNKNOWN),
+                            onEquipmentClick = onEquipmentClick
 
-                                onOpen = { },
-
-                                onCopy = { },
-
-                                onClick = {
-
-                                    onEquipmentClick(equipment)
-
-                                }
-
-                            )
-
-                            Spacer(modifier = Modifier.height(12.dp))
-
-                        }
-
-                    }
-
-                }
-
-                if (links.isNotEmpty()) {
-
-                    EquipmentSection("📶 ENLACES") {
-
-                        links.forEach { equipment ->
-
-                            EquipmentCard(
-
-                                equipment = equipment,
-
-                                status = statuses[equipment.ip]
-                                    ?: NetworkStatus(NetworkState.UNKNOWN),
-
-                                onOpen = { },
-
-                                onCopy = { },
-
-                                onClick = {
-
-                                    onEquipmentClick(equipment)
-
-                                }
-
-                            )
-
-                            Spacer(modifier = Modifier.height(12.dp))
-
-                        }
+                        )
 
                     }
 

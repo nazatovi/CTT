@@ -11,8 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.ctt.adminispmobile.util.network.NetworkState
 import com.ctt.adminispmobile.util.network.NetworkStatus
+import com.ctt.adminispmobile.model.infrastructure.EquipmentStatus
 
 @Composable
 fun NetworkStatusChip(
@@ -24,23 +24,23 @@ fun NetworkStatusChip(
     val background: Color
     val text: String
 
-    when (status.state) {
+    when (status.status) {
 
-        NetworkState.ONLINE -> {
+        EquipmentStatus.ONLINE -> {
 
             background = Color(0xFF4CAF50)
             text = "🟢 Online"
 
         }
 
-        NetworkState.SLOW -> {
+        EquipmentStatus.SLOW -> {
 
             background = Color(0xFFFF9800)
             text = "🟡 Lento"
 
         }
 
-        NetworkState.OFFLINE -> {
+        EquipmentStatus.OFFLINE -> {
 
             background = Color(0xFFF44336)
             text = "🔴 Offline"
@@ -82,7 +82,7 @@ fun NetworkStatusChip(
 
         )
 
-        status.responseTime?.let {
+        status.latency?.let {
 
             Text(
 

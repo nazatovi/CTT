@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.ctt.adminispmobile.model.infrastructure.Equipment
 import com.ctt.adminispmobile.model.infrastructure.EquipmentType
 import com.ctt.adminispmobile.util.network.NetworkStatus
+import androidx.compose.foundation.clickable
 
 @Composable
 fun EquipmentCard(
@@ -31,11 +32,21 @@ fun EquipmentCard(
 
     onOpen: () -> Unit,
 
-    onCopy: () -> Unit
+    onCopy: () -> Unit,
+
+    onClick: () -> Unit = {}
 
 ) {
 
-    AdminCard {
+    AdminCard(
+
+        modifier = Modifier.clickable {
+
+            onClick()
+
+        }
+
+    ) {
 
         Row(
 

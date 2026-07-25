@@ -72,7 +72,19 @@ fun InfrastructureScreen(
 
                 items(InfrastructureRepository.localities) { locality ->
 
-                    LocalityCard(locality)
+                    LocalityCard(
+
+                        locality = locality,
+
+                        onEquipmentClick = { equipment ->
+
+                            appViewModel.selectEquipment(equipment)
+
+                            onOpenEquipmentDetail()
+
+                        }
+
+                    )
 
                 }
 

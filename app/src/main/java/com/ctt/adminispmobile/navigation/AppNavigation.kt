@@ -65,11 +65,19 @@ fun AppNavigation(
 
             InfrastructureScreen(
 
+                appViewModel = appViewModel,
+
                 onSearchClick = {
 
-                    navController.navigate(Screen.Search.route) {
-                        launchSingleTop = true
-                    }
+                    navController.navigate(Screen.Search.route)
+
+                },
+
+                onOpenEquipmentDetail = {
+
+                    navController.navigate(
+                        Screen.EquipmentDetail.route
+                    )
 
                 }
 

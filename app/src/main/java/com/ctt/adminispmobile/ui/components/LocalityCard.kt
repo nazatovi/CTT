@@ -160,7 +160,13 @@ fun LocalityCard(
 
                                 onOpen = { },
 
-                                onCopy = { }
+                                onCopy = { },
+
+                                onClick = {
+
+                                    onEquipmentClick(equipment)
+
+                                }
 
                             )
 
@@ -187,7 +193,13 @@ fun LocalityCard(
 
                                 onOpen = { },
 
-                                onCopy = { }
+                                onCopy = { },
+
+                                onClick = {
+
+                                    onEquipmentClick(equipment)
+
+                                }
 
                             )
 
@@ -214,7 +226,13 @@ fun LocalityCard(
 
                                 onOpen = { },
 
-                                onCopy = { }
+                                onCopy = { },
+
+                                onClick = {
+
+                                    onEquipmentClick(equipment)
+
+                                }
 
                             )
 
